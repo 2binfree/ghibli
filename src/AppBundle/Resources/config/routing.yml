@@ -1,3 +1,7 @@
+app_movie:
+    resource: "@AppBundle/Resources/config/routing/movie.yml"
+    prefix:   /movie
+
 app_homepage:
     path:     /
     defaults: { _controller: AppBundle:Default:index }
