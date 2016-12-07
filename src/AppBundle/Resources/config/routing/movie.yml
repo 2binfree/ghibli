@@ -1,0 +1,12 @@
+movie_index:
+    path:     /{page}
+    defaults: { _controller: "AppBundle:Movie:index" }
+    methods:  GET
+
+movie_show:
+    path:     /{id}/show
+    defaults: { _controller: "AppBundle:Movie:show" }
+    methods:  GET
+
+
+

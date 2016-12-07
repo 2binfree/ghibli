@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Movie</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ movie.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ movie.title }}</td>
+            </tr>
+            <tr>
+                <th>Year</th>
+                <td>{{ movie.year }}</td>
+            </tr>
+            <tr>
+                <th>Summary</th>
+                <td>{{ movie.summary }}</td>
+            </tr>
+            <tr>
+                <th>Cover</th>
+                <td>
+                    <img src="{{ movie.cover }}">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('movie_index') }}">Back to the list</a>
+        </li>
+    </ul>
+{% endblock %}
