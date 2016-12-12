@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Movie
 {
     /**
-     * @var int
+     * @var string
      */
     private $id;
 
@@ -34,6 +34,16 @@ class Movie
      */
     private $cover;
 
+    /**
+     * @param $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        
+        return $this;
+    }
 
     /**
      * Get id

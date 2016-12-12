@@ -4,10 +4,8 @@ AppBundle\Entity\Movie:
     repositoryClass: AppBundle\Repository\MovieRepository
     id:
         id:
-            type: integer
+            type: string
             id: true
-            generator:
-                strategy: AUTO
     fields:
         title:
             type: string

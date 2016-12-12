@@ -26,13 +26,12 @@ class LoadMoviesData implements FixtureInterface, ContainerAwareInterface
      */
     public function load(ObjectManager $manager)
     {
-        $movies1 = $this->container->get('app_movie_generator')->getMovies('star');
-        $movies2 = $this->container->get('app_movie_generator')->getMovies('black');
-        $movies3 = $this->container->get('app_movie_generator')->getMovies('white');
-        $movies4 = $this->container->get('app_movie_generator')->getMovies('red');
-        $movies = array_merge($movies1, $movies2, $movies3, $movies4);
-        foreach($movies as $key => $movie) {
+        $movies = $this->container->get('app_movie_generator')->getMovies('star');
+        $results = $movies->Search;
+
+        foreach($results as $key => $movie) {
             $newMovie = new Movie();
+            $newMovie->setId($movie->imdbID);
             $newMovie->setTitle($movie->Title);
             $newMovie->setSummary($movie->Title);
             $newMovie->setYear($movie->Year);

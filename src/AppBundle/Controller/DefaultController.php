@@ -10,4 +10,10 @@ class DefaultController extends Controller
     {
         return $this->render('AppBundle:Default:index.html.twig');
     }
+    
+    public function animateAction()
+    {
+        $this->container->get('profiler')->disable();
+        return $this->render('AppBundle:Default:bzzz.html.twig');
+    }
 }
