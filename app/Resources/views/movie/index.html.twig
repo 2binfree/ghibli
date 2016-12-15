@@ -40,7 +40,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% for i in 1 .. maxPage  %}
+                {% for i in startPage .. endPage  %}
                     {% if page == i %}
                         <li class="disabled"><span>{{ i }}</span></li>
                     {% else %}
@@ -62,4 +62,7 @@
         </nav>
     </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+<!--<script src="{{ asset('js/pictureRetry.js') }}"></script> -->
 {% endblock %}
