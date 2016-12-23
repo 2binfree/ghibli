@@ -19,4 +19,10 @@ AppBundle\Entity\Movie:
             type: string
             length: 255
             nullable: true
+
+    manyToMany:
+        actors:
+            targetEntity: Actor
+            mappedBy: movies
+
     lifecycleCallbacks: {  }

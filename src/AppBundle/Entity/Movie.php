@@ -146,4 +146,49 @@ class Movie
     {
         return $this->cover;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $actors;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->actors = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add actors
+     *
+     * @param \AppBundle\Entity\Actor $actors
+     * @return Movie
+     */
+    public function addActor(\AppBundle\Entity\Actor $actors)
+    {
+        $this->actors[] = $actors;
+
+        return $this;
+    }
+
+    /**
+     * Remove actors
+     *
+     * @param \AppBundle\Entity\Actor $actors
+     */
+    public function removeActor(\AppBundle\Entity\Actor $actors)
+    {
+        $this->actors->removeElement($actors);
+    }
+
+    /**
+     * Get actors
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getActors()
+    {
+        return $this->actors;
+    }
 }

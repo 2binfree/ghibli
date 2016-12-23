@@ -1,0 +1,29 @@
+AppBundle\Entity\Actor:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\ActorRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '100'
+
+    manyToMany:
+        movies:
+            targetEntity: Movie
+            inversedBy: actors
+            joinTable:
+                name: actors_movies
+                joinColumns:
+                    actor_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    movie_id:
+                        referencedColumnName: id
+
+    lifecycleCallbacks: {  }

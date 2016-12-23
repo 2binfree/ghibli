@@ -33,7 +33,6 @@ class LoadMoviesData implements FixtureInterface, ContainerAwareInterface
             $newMovie = new Movie();
             $newMovie->setId($movie->imdbID);
             $newMovie->setTitle($movie->Title);
-            $newMovie->setSummary($movie->Title);
             $newMovie->setYear($movie->Year);
             $newMovie->setCover($movie->Poster);
             $manager->persist($newMovie);

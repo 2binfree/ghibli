@@ -9,7 +9,9 @@
 namespace AppBundle\Command;
 
 
+use AppBundle\Entity\Actor;
 use AppBundle\Entity\Movie;
+use AppBundle\Services\MovieGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -26,6 +28,11 @@ class ImportMoviesCommand extends ContainerAwareCommand
      */
     private $manager;
 
+    /**
+     * @var MovieGenerator
+     */
+    private $movieCollector;
+
     protected function configure()
     {
         $this
@@ -40,10 +47,10 @@ class ImportMoviesCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->manager = $this->getContainer()->get("doctrine")->getManager();
-        $moviesGetter = $this->getContainer()->get('app_movie_generator');
+        $this->movieCollector = $this->getContainer()->get('app_movie_generator');
         $pages = $input->getArgument('pages');
         $search = $input->getArgument('search');
-        $firstPageMovies = $moviesGetter->getMovies($search);
+        $firstPageMovies = $this->movieCollector->getMovies($search);
         $totalResult = $firstPageMovies->totalResults;
         $maxPage = (int)($totalResult / self::MAX_RESULTS_PER_PAGE);
         if ($pages == 0 or $pages > $maxPage) {
@@ -53,7 +60,7 @@ class ImportMoviesCommand extends ContainerAwareCommand
         $this->insertMovies($firstPageMovies->Search);
         $progress->advance();
         for ($i=2; $i<=$pages; $i++){
-            $movies = $moviesGetter->getMovies($search, $i);
+            $movies = $this->movieCollector->getMovies($search, $i);
             $this->insertMovies($movies->Search);
             $progress->advance();
         }
@@ -68,15 +75,34 @@ class ImportMoviesCommand extends ContainerAwareCommand
     {
         foreach($movies as $movie) {
             $id = $movie->imdbID;
-            $result = $this->manager->find('AppBundle:Movie', $id);
-            if (is_null($result)) {
-                $newMovie = new Movie();
-                $newMovie->setId($movie->imdbID);
-                $newMovie->setTitle($movie->Title);
-                $newMovie->setSummary($movie->Title);
-                $newMovie->setYear($movie->Year);
-                $newMovie->setCover($movie->Poster);
-                $this->manager->persist($newMovie);
+            /**
+             * @var $currentMovie Movie
+             */
+            $currentMovie = $this->manager->find('AppBundle:Movie', $id);
+            if (is_null($currentMovie)) {
+                $currentMovie = new Movie();
+                $currentMovie->setId($movie->imdbID);
+                $currentMovie->setTitle($movie->Title);
+                $currentMovie->setYear($movie->Year);
+                $currentMovie->setCover($movie->Poster);
+            }
+            if (0 === count($currentMovie->getActors())){
+                $fullMovie = $this->movieCollector->getMovie($currentMovie->getId());
+                $currentMovie->setSummary($fullMovie->Plot);
+                $actors = explode(",", $fullMovie->Actors);
+                foreach ($actors as $actor){
+                    /**
+                     * @var $currentActor Actor
+                     */
+                    $currentActor = $this->manager->getRepository('AppBundle:Actor')->findOneByName($actor);
+                    if (is_null($currentActor)) {
+                        $currentActor = new Actor();
+                        $currentActor->setName($actor);
+                        $this->manager->persist($currentActor);
+                    }
+                    $currentMovie->addActor($currentActor);
+                }
+                $this->manager->persist($currentMovie);
             }
         }
         $this->manager->flush();
