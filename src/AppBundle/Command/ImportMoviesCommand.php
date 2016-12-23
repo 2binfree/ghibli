@@ -91,18 +91,21 @@ class ImportMoviesCommand extends ContainerAwareCommand
                 $currentMovie->setSummary($fullMovie->Plot);
                 $actors = explode(",", $fullMovie->Actors);
                 foreach ($actors as $actor){
+                    $actor = trim($actor);
                     /**
                      * @var $currentActor Actor
                      */
                     $currentActor = $this->manager->getRepository('AppBundle:Actor')->findOneByName($actor);
                     if (is_null($currentActor)) {
                         $currentActor = new Actor();
-                        $currentActor->setName($actor);
-                        $this->manager->persist($currentActor);
+                        $currentActor->setName(trim($actor));
                     }
+                    $currentActor->addMovie($currentMovie);
+                    $this->manager->persist($currentActor);
                     $currentMovie->addActor($currentActor);
                 }
                 $this->manager->persist($currentMovie);
+                $this->manager->flush();
             }
         }
         $this->manager->flush();
